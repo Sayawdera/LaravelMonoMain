@@ -6,7 +6,7 @@
 ![Created By](https://img.shields.io/badge/Created%20By-Al%20Ayubi-brightgreen)
 ![Powered By](https://img.shields.io/badge/Powered%20By-Al%20Ansar-blue)
 
-Laravel  | Laravel API Response
+Laravel  | Laravel Monolith API 
 :---------|:----------------------
  11.x     | 2.x
 
@@ -14,12 +14,9 @@ Laravel  | Laravel API Response
 
 ### Использование Traits
 
-Этот пакет предоставляет два свойства, которые можно импортировать в ваши проекты, а именно::
 
 - Trait `App\Traits\RendersApiResponse`, которая может быть импортирована в ваш (базовый) класс контроллера, класс промежуточного программного обеспечения или даже в ваш класс обработчика исключений.
 - Trait `App\Traits\ConvertsExceptionToApiResponse`, которую следует импортировать только в ваш класс обработчика исключений.
-
-Таким образом, мы можем иметь базовый класс контроллера (от которого могут расширяться все остальные контроллеры):
 
 ```php
 <?php
@@ -133,27 +130,12 @@ class Handler extends ExceptionHandler
 
 ```php
 
- public function register(array|string $data): JsonResponse
-    {
-        $EmailVerificationRepository = $this->emailVerificationRepository->findByEmail($data['email']);
+ public function AnyMethod(array|string $data): JsonResponse
+{
+        
+    return ApiResponse::Error("The email is not verified, please repeat again ", Response::HTTP_UNAUTHORIZED);
+}
 
-        if ($EmailVerificationRepository and Hash::check($data['code'], $EmailVerificationRepository->code))
-        {
-            $data['password'] = bcrypt($data['password']);
-            $data['roles'] = [['role_code' => 'new_user', 'status' => true]];
-            $data['email_verified_at'] = date('Y-m-d');
-            $user = $this->repository->create($data);
-            $EmailVerificationRepository->delete($data['code']);
-
-            return ApiResponse::Success([
-                'type' => 'Bearer',
-                'token' => $this->userRepository->createToken($data['email']),
-                'user' => $user,
-            ], TRUE);
-        } else {
-            return ApiResponse::Error("The email is not verified, please repeat again ", Response::HTTP_UNAUTHORIZED);
-        }
-    }
 
 ```
 если коротко то вот 

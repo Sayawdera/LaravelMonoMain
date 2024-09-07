@@ -28,3 +28,4 @@ frankenphp-worker.php
 .idea
 .vscode
 .zed
+.DS_Store
